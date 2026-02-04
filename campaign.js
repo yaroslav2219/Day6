@@ -3,9 +3,9 @@ export const campaign = {
     return {
       parent: null,
       loader: false,
-      items: [],               // список банерів
-      newPopupActive: false,   // показ попапу
-      form: {                  // форма банера
+      items: [],               
+      newPopupActive: false,   
+      form: {                  
         link: '',
         description: '',
         type: '',
@@ -47,25 +47,21 @@ export const campaign = {
       ];
     },
 
-    // Відкрити попап
     openNew() {
       this.form = { link: '', description: '', type: '', image: null };
       this.newPopupActive = true;
     },
 
-    // Зміна зображення
     onImageChange(e) {
       this.form.image = e.target.files[0] || null;
     },
 
-    // Збереження банера
     save() {
       if (!this.form.link || !this.form.type || !this.form.image) {
         alert('Заповніть всі обов’язкові поля та завантажте зображення');
         return;
       }
 
-      // Створюємо новий банер локально для миттєвого відображення
       const newId = this.items.length ? Math.max(...this.items.map(i => i.id)) + 1 : 1;
       const newItem = {
         id: newId,
@@ -76,15 +72,14 @@ export const campaign = {
         clicks: 0,
         leads: 0,
         fclicks: 0,
-        image: URL.createObjectURL(this.form.image) // тимчасово відображаємо локальне фото
+        image: URL.createObjectURL(this.form.image) 
       };
 
-      this.items.push(newItem);          // додаємо в таблицю
-      this.newPopupActive = false;       // закриваємо попап
-      this.form = { link: '', description: '', type: '', image: null }; // очищаємо форму
+      this.items.push(newItem);        
+      this.newPopupActive = false;       
+      this.form = { link: '', description: '', type: '', image: null }; 
     },
 
-    // Видалення банера
     del(item) {
       if (!confirm('Видалити банер?')) return;
       this.items = this.items.filter(i => i.id !== item.id);
@@ -185,4 +180,5 @@ export const campaign = {
   </div>
   `
 }
+
 
