@@ -7,7 +7,7 @@ import { img } from "./img.js";
 
 document.addEventListener('DOMContentLoaded', function(){
 
-  const WORKER_URL = 'https://twilight-night-3140.kya-pk22-6-3.workers.dev'; // <-- твій Worker
+  const WORKER_URL = 'https://twilight-night-3140.kya-pk22-6-3.workers.dev'; // це потрібно для для роботи з https переходами
 
   const appConfig = {
     data() {
@@ -30,13 +30,11 @@ document.addEventListener('DOMContentLoaded', function(){
     },
 
     methods: {
-      // 🔹 Конвертуємо http -> https
       fixUrl(url) {
         if (!url) return '';
         return url.replace(/^http:/, 'https:');
       },
 
-      // 🔹 Ініціалізація користувача
       initUser() {
         const stored = window.localStorage.getItem('user');
         if(stored){
@@ -48,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function(){
         }
       },
 
-      // 🔹 Основна ініціалізація сторінки
       init() {
         this.initUser();
 
@@ -60,7 +57,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
           const pathSegment = this.$route.path.split('/')[1] || '';
 
-          // Роутинг для admin / user
           if(pathSegment === '' && this.user.type === 'admin'){
             this.page('/campaigns');
           }
@@ -76,7 +72,6 @@ document.addEventListener('DOMContentLoaded', function(){
         });
       },
 
-      // 🔹 Вихід з системи
       logout() {
         this.user = { id:null, name:"", phone:"", email:"", date:"", auth:"", type:"" };
         window.localStorage.removeItem('user');
@@ -91,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function(){
         setTimeout(() => window.scroll({ top: 1000, behavior: 'smooth' }), 50);
       },
 
-      // 🔹 Перехід на сторінку
       page(path=""){
         this.$router.replace(path).then(() => {
           this.updateTitle();
@@ -103,7 +97,6 @@ document.addEventListener('DOMContentLoaded', function(){
         document.title = this.title;
       },
 
-      // 🔹 Конвертуємо об'єкт у FormData для axios
       toFormData(obj){
         const fd = new FormData();
         for(const x in obj){
@@ -135,3 +128,4 @@ document.addEventListener('DOMContentLoaded', function(){
 
   app.use(router).mount('#content');
 });
+
