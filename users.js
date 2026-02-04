@@ -30,6 +30,11 @@ export const users = {
 
   methods: {
 
+    fixUrl(url) {
+      if (!url) return '';
+      return url.replace(/^http:/, 'https:');
+    },
+
     async getUsers() {
       this.loader = true;
 
@@ -39,7 +44,11 @@ export const users = {
         );
 
         this.items = Array.isArray(res.data.items)
-          ? res.data.items
+          ? res.data.items.map(i => ({
+              ...i,
+              image: this.fixUrl(i.image),
+              link: this.fixUrl(i.link)
+            }))
           : [];
       } catch (e) {
         console.error(e);
@@ -48,9 +57,9 @@ export const users = {
       }
     },
 
-   goUser(id) {
-  this.$router.push({ path: `/user/${id}` });
-},
+    goUser(id) {
+      this.$router.push({ path: `/user/${id}` });
+    },
 
     async toggleActive(user, value) {
       const old = user.active;
@@ -59,10 +68,7 @@ export const users = {
       try {
         await axios.post(
           `${this.parent.url}/site/actionUser?auth=${this.parent.user.id}`,
-          this.parent.toFormData({
-            id: user.id,
-            active: value
-          })
+          this.parent.toFormData({ id: user.id, active: value })
         );
       } catch (e) {
         console.error(e);
@@ -71,13 +77,7 @@ export const users = {
     },
 
     openNew() {
-      this.form = {
-        name: '',
-        email: '',
-        phone: '',
-        active: 1
-      };
-
+      this.form = { name: '', email: '', phone: '', active: 1 };
       this.$refs.new.active = true;
     },
 
@@ -107,14 +107,9 @@ export const users = {
 
   <div class="wrapper">
     <div class="panel">
-      <div class="w70">
-        <h1>Users</h1>
-      </div>
-
+      <div class="w70"><h1>Users</h1></div>
       <div class="w30 al">
-        <a href="#" class="btnS" @click.prevent="openNew">
-          + New
-        </a>
+        <a href="#" class="btnS" @click.prevent="openNew">+ New</a>
       </div>
     </div>
 
@@ -129,59 +124,31 @@ export const users = {
             <th>Name</th>
           </tr>
         </thead>
-<tbody>
-  <tr
-    v-for="item in items"
-    :key="item.id"
-    class="row-click"
-    @click="goUser(item.id)"
-  >
-    <td>{{ item.id }}</td>
-
-    <td class="actions" @click.stop>
-      <toogle
-        :modelValue="item.active"
-        @update:modelValue="toggleActive(item, $event)"
-      />
-    </td>
-
-    <td>{{ item.phone }}</td>
-    <td>{{ item.email }}</td>
-    <td>{{ item.name }}</td>
-  </tr>
-</tbody>
-
-   </tr>
+        <tbody>
+          <tr v-for="item in items" :key="item.id" class="row-click" @click="goUser(item.id)">
+            <td>{{ item.id }}</td>
+            <td class="actions" @click.stop>
+              <toogle :modelValue="item.active" @update:modelValue="toggleActive(item,$event)" />
+            </td>
+            <td>{{ item.phone }}</td>
+            <td>{{ item.email }}</td>
+            <td>{{ item.name }}</td>
+          </tr>
         </tbody>
       </table>
     </div>
 
     <div class="empty" v-else>No users</div>
+
+    <popup ref="new" title="New user">
+      <form @submit.prevent="saveUser">
+        <div class="row"><label>Name</label><input type="text" v-model="form.name" required /></div>
+        <div class="row"><label>Email</label><input type="email" v-model="form.email" required /></div>
+        <div class="row"><label>Phone</label><input type="text" v-model="form.phone" /></div>
+        <button class="btn">Save</button>
+      </form>
+    </popup>
   </div>
-
-
-  <popup ref="new" title="New user">
-    <form @submit.prevent="saveUser">
-      <div class="row">
-        <label>Name</label>
-        <input type="text" v-model="form.name" required />
-      </div>
-
-      <div class="row">
-        <label>Email</label>
-        <input type="email" v-model="form.email" required />
-      </div>
-
-      <div class="row">
-        <label>Phone</label>
-        <input type="text" v-model="form.phone" />
-      </div>
-
-      <button class="btn">Save</button>
-    </form>
-  </popup>
 </div>
 `
 };
-            
-
