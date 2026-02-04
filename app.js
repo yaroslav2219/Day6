@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function(){
             fixUrl(url) {
   if (!url) return '';
   return url.replace(/^http:/, 'https:');
-}
+},
 
 
             initUser() {
@@ -132,4 +132,5 @@ document.addEventListener('DOMContentLoaded', function(){
 
     app.use(router).mount('#content');
 });
+
 
