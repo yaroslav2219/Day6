@@ -1,76 +1,152 @@
+console.log('users module loaded');
+
 export const users = {
   data() {
     return {
       parent: null,
       loader: false,
-      items: []
-    }
+      items: [],
+
+      form: {
+        name: '',
+        email: '',
+        phone: '',
+        active: 1
+      }
+    };
   },
 
   mounted() {
-    this.parent = this.$root
+    this.parent = this.$root;
 
     if (!this.parent?.user?.id) {
-      this.parent.logout()
-      return
+      console.warn('NO USER ID');
+      this.parent.logout();
+      return;
     }
 
-    this.getUsers()
+    this.getUsers();
   },
 
   methods: {
-    getUsers() {
-      this.loader = true
 
-      axios.post(this.parent.url + '/users/get', {
-        token: this.parent.user.token
-      }).then(res => {
-        this.items = res.data || []
-      }).finally(() => {
-        this.loader = false
-      })
+    async getUsers() {
+      this.loader = true;
+
+      try {
+        const res = await axios.post(
+          `${this.parent.url}/site/getUsers?auth=${this.parent.user.id}`
+        );
+
+        this.items = Array.isArray(res.data.items)
+          ? res.data.items
+          : [];
+      } catch (e) {
+        console.error(e);
+      } finally {
+        this.loader = false;
+      }
     },
 
-    openUser(user) {
-      this.$router.push('/user/' + user.id)
+   goUser(id) {
+  this.$router.push({ path: `/user/${id}` });
+},
+
+    async toggleActive(user, value) {
+      const old = user.active;
+      user.active = value;
+
+      try {
+        await axios.post(
+          `${this.parent.url}/site/actionUser?auth=${this.parent.user.id}`,
+          this.parent.toFormData({
+            id: user.id,
+            active: value
+          })
+        );
+      } catch (e) {
+        console.error(e);
+        user.active = old;
+      }
+    },
+
+    openNew() {
+      this.form = {
+        name: '',
+        email: '',
+        phone: '',
+        active: 1
+      };
+
+      this.$refs.new.active = true;
+    },
+
+    async saveUser() {
+      if (!this.form.name || !this.form.email) return;
+
+      try {
+        await axios.post(
+          `${this.parent.url}/site/actionUser?auth=${this.parent.user.id}`,
+          this.parent.toFormData(this.form)
+        );
+
+        this.$refs.new.active = false;
+        this.$refs.header.$refs.msg.successFun('User created');
+        this.getUsers();
+      } catch (e) {
+        console.error(e);
+      }
     }
   },
 
   template: `
-  <div class="inside-content">
-    <div class="top-bar">
-      <h1>Users</h1>
-      <button class="btn btn-green" @click="$router.push('/user/new')">
-        + New
-      </button>
+<div class="inside-content">
+  <Header ref="header" />
+
+  <div v-if="loader" id="spinner"></div>
+
+  <div class="wrapper">
+    <div class="panel">
+      <div class="w70">
+        <h1>Users</h1>
+      </div>
+
+      <div class="w30 al">
+        <a href="#" class="btnS" @click.prevent="openNew">
+          + New
+        </a>
+      </div>
     </div>
 
-    <table class="table" v-if="items.length">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Phone</th>
-        </tr>
-      </thead>
+    <div class="table" v-if="items.length">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th></th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Name</th>
+          </tr>
+        </thead>
+<tbody>
+  <tr
+    v-for="item in items"
+    :key="item.id"
+    class="row-click"
+    @click="goUser(item.id)"
+  >
+    <td>{{ item.id }}</td>
 
-      <tbody>
-        <tr v-for="u in items"
-            :key="u.id"
-            class="row-click"
-            @click="openUser(u)">
-          <td>{{ u.id }}</td>
-          <td>{{ u.name }}</td>
-          <td>{{ u.email }}</td>
-          <td>{{ u.phone }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <td class="actions" @click.stop>
+      <toogle
+        :modelValue="item.active"
+        @update:modelValue="toggleActive(item, $event)"
+      />
+    </td>
 
-    <div v-if="!items.length && !loader">
-      No users
-    </div>
-  </div>
-  `
-}
+    <td>{{ item.phone }}</td>
+    <td>{{ item.email }}</td>
+    <td>{{ item.name }}</td>
+  </tr>
+</tbody>
