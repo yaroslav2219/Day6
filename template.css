@@ -501,6 +501,120 @@ input:checked + .slider:before {
     overflow-y: auto;
 }
 
+@media (max-width: 1024px) {
+
+  .wrapper {
+    padding: 10px 15px;
+  }
+
+  .panel {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .panel h1 {
+    font-size: 20px;
+  }
+
+  .w20, .w40, .w60, .w70, .w10 {
+    width: 100%;
+  }
+
+  .flex {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  #left-area,
+  #right-area {
+    width: 100%;
+    height: auto;
+  }
+
+  #right-area img {
+    height: auto;
+    max-height: 300px;
+  }
+}
+
+/* =========================
+   MOBILE ONLY
+========================= */
+
+@media (max-width: 768px) {
+
+  /* HEADER */
+  .header {
+    position: relative;
+  }
+
+  #menu ul {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  #menu ul.active {
+    display: flex;
+    width: 200px;
+  }
+
+  #menu i.fa-bars {
+    display: block;
+  }
+
+  /* USER MENU */
+  #user-info {
+    right: 0;
+    width: 160px;
+  }
+
+  /* TABLE */
+  .table {
+    overflow-x: auto;
+  }
+
+  .table table {
+    min-width: 700px;
+  }
+
+  /* BUTTONS */
+  .btn,
+  .btnS {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ALERTS */
+  .alertMsg,
+  .successMsg {
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 30px);
+    max-width: 400px;
+    text-align: center;
+  }
+
+  /* POPUP */
+  .popup {
+    width: 95%;
+    max-width: 95%;
+  }
+
+  .popup-inner {
+    padding: 15px;
+  }
+
+  .head-popup {
+    padding: 12px 15px;
+  }
+
+  .head-title {
+    font-size: 16px;
+  }
+}
+
 @media (max-width: 600px) {
     .popup {
         width: 90%;
@@ -508,6 +622,34 @@ input:checked + .slider:before {
         transform: translate(-50%, -50%); 
     }
 }
+
+@media (max-width: 480px) {
+
+  .panel h1 {
+    font-size: 18px;
+  }
+
+  label {
+    font-size: 13px;
+  }
+
+  input,
+  .btn {
+    font-size: 14px;
+  }
+
+  #user-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .table table {
+    min-width: 600px;
+  }
+}
+
+
 
 
 
