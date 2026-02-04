@@ -7,21 +7,23 @@ export const user = {
       loader: false,
 
       userId: null,
-      userName: '',
+      userName: 'User',
 
-      items: [] 
+      items: []
     };
   },
 
   mounted() {
     this.parent = this.$root;
 
+    // 🔐 перевірка авторизації
     if (!this.parent?.user?.id) {
       console.warn('NO AUTH USER');
       this.parent.logout();
       return;
     }
 
+    // 📌 id з роуту
     this.userId = this.$route.params.id;
 
     if (!this.userId) {
@@ -34,8 +36,13 @@ export const user = {
   },
 
   methods: {
+    // 🔹 безпечне виправлення http → https
+    safeUrl(url) {
+      if (!url) return '';
+      return url.replace(/^http:\/\//i, 'https://');
+    },
 
-    
+    // 🔹 завантаження користувача
     async getUser() {
       try {
         const res = await axios.post(
@@ -43,13 +50,13 @@ export const user = {
           this.parent.toFormData({ id: this.userId })
         );
 
-        this.userName = res.data?.item?.name || 'User';
+        this.userName = res?.data?.item?.name || 'User';
       } catch (e) {
-        console.error(e);
+        console.error('getUser error:', e);
       }
     },
 
-    // 🔹 Завантаження статистики
+    // 🔹 завантаження статистики користувача
     async getStatistic() {
       this.loader = true;
 
@@ -59,31 +66,35 @@ export const user = {
           this.parent.toFormData({ user_id: this.userId })
         );
 
-        this.items = Array.isArray(res.data.items)
+        this.items = Array.isArray(res.data?.items)
           ? res.data.items.map(item => ({
               ...item,
-              image: this.parent.fixUrl(item.image) 
+              image: this.safeUrl(item.image),
+              link: this.safeUrl(item.link)
             }))
           : [];
       } catch (e) {
-        console.error(e);
+        console.error('getStatistic error:', e);
       } finally {
         this.loader = false;
       }
     },
 
+    // 🔹 вкл / викл кампанії
     async toggleCampaign(item, value) {
       const old = item.active;
       item.active = value;
 
-      console.log('API URL:', this.parent.url);
       try {
         await axios.post(
           `${this.parent.url}/site/actionCampaign?auth=${this.parent.user.id}`,
-          this.parent.toFormData({ id: item.id, active: value })
+          this.parent.toFormData({
+            id: item.id,
+            active: value
+          })
         );
       } catch (e) {
-        console.error(e);
+        console.error('toggleCampaign error:', e);
         item.active = old;
       }
     }
@@ -96,7 +107,6 @@ export const user = {
   <div v-if="loader" id="spinner"></div>
 
   <div class="wrapper">
-
     <div class="panel">
       <h1>{{ userName }}</h1>
     </div>
@@ -127,7 +137,12 @@ export const user = {
             <td>{{ item.views || 0 }}</td>
 
             <td>
-              <a v-if="item.link" :href="item.link" target="_blank">
+              <a
+                v-if="item.link"
+                :href="item.link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {{ item.link }}
               </a>
             </td>
@@ -155,7 +170,6 @@ export const user = {
     </div>
 
     <div class="empty" v-else>No statistic</div>
-
   </div>
 </div>
 `
