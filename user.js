@@ -4,7 +4,7 @@ export const user = {
       parent: null,
       loader: false,
       user: null,
-      items: [], // таблиця (як у campaign)
+      items: [], // таблиця
       date: '',
       date2: ''
     }
@@ -25,12 +25,19 @@ export const user = {
     getUser() {
       this.loader = true
 
-      axios.post(this.parent.url + '/users/getOne', {
+      // використовуємо CORS-проксі
+      const proxy = 'https://cors-anywhere.herokuapp.com/';
+      const url = proxy + this.parent.url + '/users/getOne';
+
+      axios.post(url, {
         id: this.$route.params.id,
         token: this.parent.user.token
       }).then(res => {
         this.user = res.data.user
         this.items = res.data.items || []
+      }).catch(err => {
+        console.error('Помилка запиту:', err)
+        alert('Не вдалося отримати дані. CORS або сервер недоступний.')
       }).finally(() => {
         this.loader = false
       })
@@ -45,7 +52,6 @@ export const user = {
       <div>Phone: {{ user.phone }}</div>
     </div>
 
-    <!-- ТУТ таблиця як у campaign.js, але без статистики -->
     <table class="table" v-if="items.length">
       <thead>
         <tr>
