@@ -50,7 +50,7 @@ export const users = {
 
    goUser(id) {
   this.$router.push({ path: `/user/${id}` });
-}
+},
 
     async toggleActive(user, value) {
       const old = user.active;
@@ -189,5 +189,6 @@ export const users = {
 </div>
 `
 };
+
 
 
