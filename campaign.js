@@ -36,7 +36,7 @@ export const campaign = {
       this.items = [
         {
           id: 1,
-          image: 'https://via.placeholder.com/300x250',
+          image: 'https://dummyimage.com/300x250/eeeeee/000000&text=300x250',
           type: '300x250',
           link: 'https://dreamview-seo.co-il',
           views: 120,
@@ -185,3 +185,4 @@ export const campaign = {
   </div>
   `
 }
+
