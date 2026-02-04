@@ -9,7 +9,7 @@ export const user = {
       userId: null,
       userName: '',
 
-      items: [] // statistic rows
+      items: [] 
     };
   },
 
@@ -34,9 +34,7 @@ export const user = {
   },
 
   methods: {
-    /* ======================
-       USER INFO
-    ====================== */
+
     async getUser() {
       try {
         const res = await axios.post(
@@ -50,9 +48,7 @@ export const user = {
       }
     },
 
-    /* ======================
-       STATISTIC
-    ====================== */
+
     async getStatistic() {
       this.loader = true;
 
@@ -72,13 +68,12 @@ export const user = {
       }
     },
 
-    /* ======================
-       TOGGLE
-    ====================== */
+
     async toggleCampaign(item, value) {
       const old = item.active;
       item.active = value;
-
+      
+console.log('API URL:', this.parent.url);
       try {
         await axios.post(
           `${this.parent.url}/site/actionCampaign?auth=${this.parent.user.id}`,
@@ -102,12 +97,10 @@ export const user = {
 
   <div class="wrapper">
 
-    <!-- USER NAME -->
     <div class="panel">
       <h1>{{ userName }}</h1>
     </div>
 
-    <!-- STATISTIC -->
     <h2 style="margin:20px 0">Statistic</h2>
 
     <div class="table" v-if="items.length">
@@ -167,3 +160,4 @@ export const user = {
 </div>
 `
 };
+
