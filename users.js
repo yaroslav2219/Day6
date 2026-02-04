@@ -151,4 +151,37 @@ export const users = {
   </tr>
 </tbody>
 
+   </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="empty" v-else>No users</div>
+  </div>
+
+
+  <popup ref="new" title="New user">
+    <form @submit.prevent="saveUser">
+      <div class="row">
+        <label>Name</label>
+        <input type="text" v-model="form.name" required />
+      </div>
+
+      <div class="row">
+        <label>Email</label>
+        <input type="email" v-model="form.email" required />
+      </div>
+
+      <div class="row">
+        <label>Phone</label>
+        <input type="text" v-model="form.phone" />
+      </div>
+
+      <button class="btn">Save</button>
+    </form>
+  </popup>
+</div>
+`
+};
             
+
