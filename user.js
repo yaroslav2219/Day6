@@ -8,8 +8,10 @@ export const user = {
 
       userId: null,
       userName: '',
+      userEmail: '',
+      userPhone: '',
 
-      items: [] 
+      items: [] // статистика
     };
   },
 
@@ -34,65 +36,87 @@ export const user = {
   },
 
   methods: {
-
-    // 🔹 Конвертуємо посилання в https
-    fixUrl(url) {
-      if (!url) return '';
-      return url.replace(/^http:/, 'https:');
-    },
-
-    // 🔹 Завантаження даних користувача
-    async getUser() {
-      try {
-        const res = await axios.post(
-          `${this.parent.url}/site/getUser?auth=${this.parent.user.id}`,
-          this.parent.toFormData({ id: this.userId })
-        );
-
-        this.userName = res.data?.item?.name || 'User';
-      } catch (e) {
-        console.error(e);
+    // 🔹 Локальні дані користувача
+    getUser() {
+      if (this.userId === '23') {
+        this.userName = 'Yan Basok';
+        this.userEmail = 'basok@mail.com';
+        this.userPhone = '0963346617';
+      } else if (this.userId === '25') {
+        this.userName = 'Doron Ben David';
+        this.userEmail = 'doron@dreamview.co.il';
+        this.userPhone = '0506435555';
+      } else {
+        this.userName = 'User ' + this.userId;
+        this.userEmail = '';
+        this.userPhone = '';
       }
     },
 
-    // 🔹 Завантаження статистики
-    async getStatistic() {
-      this.loader = true;
-
-      try {
-        const res = await axios.post(
-          `${this.parent.url}/site/getUserStatistic?auth=${this.parent.user.id}`,
-          this.parent.toFormData({ user_id: this.userId })
-        );
-
-        this.items = Array.isArray(res.data.items)
-          ? res.data.items.map(item => ({
-              ...item,
-              image: this.fixUrl(item.image),
-              link: this.fixUrl(item.link)
-            }))
-          : [];
-      } catch (e) {
-        console.error(e);
-      } finally {
-        this.loader = false;
+    // 🔹 Локальна статистика
+    getStatistic() {
+      if (this.userId === '23') {
+        this.items = [
+          {
+            id: 1,
+            fclicks: 0,
+            leads: 5,
+            clicks: 20,
+            views: 200,
+            link: 'https://example.com/1',
+            size: '300x250',
+            campaign: 'Campaign A',
+            image: 'https://via.placeholder.com/60x60',
+            active: true
+          },
+          {
+            id: 2,
+            fclicks: 1,
+            leads: 15,
+            clicks: 50,
+            views: 500,
+            link: 'https://example.com/2',
+            size: '728x90',
+            campaign: 'Campaign B',
+            image: 'https://via.placeholder.com/60x60',
+            active: false
+          }
+        ];
+      } else if (this.userId === '25') {
+        this.items = [
+          {
+            id: 1,
+            fclicks: 2,
+            leads: 8,
+            clicks: 30,
+            views: 300,
+            link: 'https://dreamview.co.il/1',
+            size: '300x250',
+            campaign: 'Campaign X',
+            image: 'https://via.placeholder.com/60x60',
+            active: true
+          },
+          {
+            id: 2,
+            fclicks: 0,
+            leads: 10,
+            clicks: 40,
+            views: 400,
+            link: 'https://dreamview.co.il/2',
+            size: '728x90',
+            campaign: 'Campaign Y',
+            image: 'https://via.placeholder.com/60x60',
+            active: true
+          }
+        ];
+      } else {
+        this.items = [];
       }
     },
 
-    // 🔹 Активність кампанії
-    async toggleCampaign(item, value) {
-      const old = item.active;
+    toggleCampaign(item, value) {
+      // просто міняємо локально
       item.active = value;
-
-      try {
-        await axios.post(
-          `${this.parent.url}/site/actionCampaign?auth=${this.parent.user.id}`,
-          this.parent.toFormData({ id: item.id, active: value })
-        );
-      } catch (e) {
-        console.error(e);
-        item.active = old;
-      }
     }
   },
 
@@ -103,9 +127,10 @@ export const user = {
   <div v-if="loader" id="spinner"></div>
 
   <div class="wrapper">
-
     <div class="panel">
       <h1>{{ userName }}</h1>
+      <div>Email: {{ userEmail }}</div>
+      <div>Phone: {{ userPhone }}</div>
     </div>
 
     <h2 style="margin:20px 0">Statistic</h2>
@@ -128,10 +153,10 @@ export const user = {
 
         <tbody>
           <tr v-for="item in items" :key="item.id">
-            <td>{{ item.fclicks || 0 }}</td>
-            <td>{{ item.leads || 0 }}</td>
-            <td>{{ item.clicks || 0 }}</td>
-            <td>{{ item.views || 0 }}</td>
+            <td>{{ item.fclicks }}</td>
+            <td>{{ item.leads }}</td>
+            <td>{{ item.clicks }}</td>
+            <td>{{ item.views }}</td>
 
             <td>
               <a v-if="item.link" :href="item.link" target="_blank">
@@ -162,7 +187,6 @@ export const user = {
     </div>
 
     <div class="empty" v-else>No statistic</div>
-
   </div>
 </div>
 `
