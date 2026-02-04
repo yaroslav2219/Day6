@@ -28,6 +28,11 @@ document.addEventListener('DOMContentLoaded', function(){
         },
 
         methods: {
+            fixUrl(url) {
+  if (!url) return '';
+  return url.replace(/^http:/, 'https:');
+}
+
 
             initUser() {
                 const stored = window.localStorage.getItem('user');
@@ -127,3 +132,4 @@ document.addEventListener('DOMContentLoaded', function(){
 
     app.use(router).mount('#content');
 });
+
