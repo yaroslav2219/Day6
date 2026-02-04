@@ -150,3 +150,6 @@ export const users = {
     <td>{{ item.name }}</td>
   </tr>
 </tbody>
+  </tr>
+        </tbody>
+      </table>
