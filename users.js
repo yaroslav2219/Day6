@@ -151,11 +151,6 @@ export const users = {
   </tr>
 </tbody>
 
-            <td>
-              <router-link :to="'/user/' + item.id">
-                {{ item.name }}
-              </router-link>
-            </td>
           </tr>
         </tbody>
       </table>
@@ -188,6 +183,7 @@ export const users = {
 </div>
 `
 };
+
 
 
 
