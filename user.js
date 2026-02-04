@@ -35,6 +35,7 @@ export const user = {
 
   methods: {
 
+    
     async getUser() {
       try {
         const res = await axios.post(
@@ -48,7 +49,7 @@ export const user = {
       }
     },
 
-
+    // 🔹 Завантаження статистики
     async getStatistic() {
       this.loader = true;
 
@@ -59,7 +60,10 @@ export const user = {
         );
 
         this.items = Array.isArray(res.data.items)
-          ? res.data.items
+          ? res.data.items.map(item => ({
+              ...item,
+              image: this.parent.fixUrl(item.image) 
+            }))
           : [];
       } catch (e) {
         console.error(e);
@@ -68,19 +72,15 @@ export const user = {
       }
     },
 
-
     async toggleCampaign(item, value) {
       const old = item.active;
       item.active = value;
-      
-console.log('API URL:', this.parent.url);
+
+      console.log('API URL:', this.parent.url);
       try {
         await axios.post(
           `${this.parent.url}/site/actionCampaign?auth=${this.parent.user.id}`,
-          this.parent.toFormData({
-            id: item.id,
-            active: value
-          })
+          this.parent.toFormData({ id: item.id, active: value })
         );
       } catch (e) {
         console.error(e);
@@ -146,7 +146,7 @@ console.log('API URL:', this.parent.url);
             <td class="actions">
               <toogle
                 :modelValue="item.active"
-                @update:modelValue="toggleCampaign(item,$event)"
+                @update:modelValue="toggleCampaign(item, $event)"
               />
             </td>
           </tr>
@@ -160,4 +160,3 @@ console.log('API URL:', this.parent.url);
 </div>
 `
 };
-
