@@ -7,40 +7,59 @@ export const user = {
       loader: false,
 
       userId: null,
-      items: []
+      userName: '',
+
+      items: [] // statistic rows
     };
   },
 
-mounted() {
-  this.parent = this.$root;
+  mounted() {
+    this.parent = this.$root;
 
-  if (!this.parent?.user?.id) {
-    console.warn('NO USER ID');
-    this.parent.logout();
-    return;
-  }
+    if (!this.parent?.user?.id) {
+      console.warn('NO AUTH USER');
+      this.parent.logout();
+      return;
+    }
 
-  const id = this.$route.params.id;
-  if (!id) {
-    console.warn('NO ROUTE USER ID');
-    return;
-  }
+    this.userId = this.$route.params.id;
 
-  this.userId = id;
-  this.getStatistic();
-},
+    if (!this.userId) {
+      console.warn('NO USER ID IN ROUTE');
+      return;
+    }
+
+    this.getUser();
+    this.getStatistic();
+  },
 
   methods: {
+    /* ======================
+       USER INFO
+    ====================== */
+    async getUser() {
+      try {
+        const res = await axios.post(
+          `${this.parent.url}/site/getUser?auth=${this.parent.user.id}`,
+          this.parent.toFormData({ id: this.userId })
+        );
 
+        this.userName = res.data?.item?.name || 'User';
+      } catch (e) {
+        console.error(e);
+      }
+    },
+
+    /* ======================
+       STATISTIC
+    ====================== */
     async getStatistic() {
       this.loader = true;
 
       try {
         const res = await axios.post(
           `${this.parent.url}/site/getUserStatistic?auth=${this.parent.user.id}`,
-          this.parent.toFormData({
-            user_id: this.userId
-          })
+          this.parent.toFormData({ user_id: this.userId })
         );
 
         this.items = Array.isArray(res.data.items)
@@ -53,6 +72,9 @@ mounted() {
       }
     },
 
+    /* ======================
+       TOGGLE
+    ====================== */
     async toggleCampaign(item, value) {
       const old = item.active;
       item.active = value;
@@ -79,15 +101,20 @@ mounted() {
   <div v-if="loader" id="spinner"></div>
 
   <div class="wrapper">
+
+    <!-- USER NAME -->
     <div class="panel">
-      <h1>User statistic</h1>
+      <h1>{{ userName }}</h1>
     </div>
+
+    <!-- STATISTIC -->
+    <h2 style="margin:20px 0">Statistic</h2>
 
     <div class="table" v-if="items.length">
       <table>
         <thead>
           <tr>
-            <th>Fraud clicks</th>
+            <th>Fraud</th>
             <th>Leads</th>
             <th>Clicks</th>
             <th>Views</th>
@@ -107,11 +134,7 @@ mounted() {
             <td>{{ item.views || 0 }}</td>
 
             <td>
-              <a
-                v-if="item.link"
-                :href="item.link"
-                target="_blank"
-              >
+              <a v-if="item.link" :href="item.link" target="_blank">
                 {{ item.link }}
               </a>
             </td>
@@ -139,8 +162,8 @@ mounted() {
     </div>
 
     <div class="empty" v-else>No statistic</div>
+
   </div>
 </div>
 `
 };
-
