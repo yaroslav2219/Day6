@@ -129,8 +129,7 @@ export const users = {
             <th>Name</th>
           </tr>
         </thead>
-
-       <tbody>
+<tbody>
   <tr
     v-for="item in items"
     :key="item.id"
@@ -189,6 +188,7 @@ export const users = {
 </div>
 `
 };
+
 
 
 
