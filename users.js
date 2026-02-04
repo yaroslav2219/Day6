@@ -48,9 +48,9 @@ export const users = {
       }
     },
 
-    goUser(id) {
-  this.$router.push('/user/' + id);
-},
+   goUser(id) {
+  this.$router.push({ path: `/user/${id}` });
+}
 
     async toggleActive(user, value) {
       const old = user.active;
@@ -130,26 +130,27 @@ export const users = {
           </tr>
         </thead>
 
-        <tbody>
-          <tr v-for="item in items" :key="item.id">
-            <td>{{ item.id }}</td>
+       <tbody>
+  <tr
+    v-for="item in items"
+    :key="item.id"
+    class="row-click"
+    @click="goUser(item.id)"
+  >
+    <td>{{ item.id }}</td>
 
-            <tr
-  v-for="item in items"
-  :key="item.id"
-  style="cursor:pointer"
-  @click="goUser(item.id)"
->
+    <td class="actions" @click.stop>
+      <toogle
+        :modelValue="item.active"
+        @update:modelValue="toggleActive(item, $event)"
+      />
+    </td>
 
-            <td class="actions">
-              <toogle
-                :modelValue="item.active"
-                @update:modelValue="toggleActive(item,$event)"
-              />
-            </td>
-
-            <td>{{ item.phone }}</td>
-            <td>{{ item.email }}</td>
+    <td>{{ item.phone }}</td>
+    <td>{{ item.email }}</td>
+    <td>{{ item.name }}</td>
+  </tr>
+</tbody>
 
             <td>
               <router-link :to="'/user/' + item.id">
@@ -188,4 +189,5 @@ export const users = {
 </div>
 `
 };
+
 
