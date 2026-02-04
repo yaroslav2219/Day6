@@ -123,40 +123,32 @@ export const users = {
         <thead>
           <tr>
             <th>#</th>
-            <th>Active</th>
+            <th></th>
             <th>Phone</th>
             <th>Email</th>
             <th>Name</th>
           </tr>
         </thead>
-        <tbody>
-          <tr
-            v-for="item in items"
-            :key="item.id"
-            class="row-click"
-            @click="goUser(item.id)"
-          >
-            <td>{{ item.id }}</td>
+<tbody>
+  <tr
+    v-for="item in items"
+    :key="item.id"
+    class="row-click"
+    @click="goUser(item.id)"
+  >
+    <td>{{ item.id }}</td>
 
-            <td class="actions" @click.stop>
-              <toggle
-                :modelValue="item.active"
-                @update:modelValue="toggleActive(item, $event)"
-              />
-            </td>
+    <td class="actions" @click.stop>
+      <toogle
+        :modelValue="item.active"
+        @update:modelValue="toggleActive(item, $event)"
+      />
+    </td>
 
-            <td>{{ item.phone }}</td>
-            <td>{{ item.email }}</td>
-            <td>{{ item.name }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <td>{{ item.phone }}</td>
+    <td>{{ item.email }}</td>
+    <td>{{ item.name }}</td>
+  </tr>
+</tbody>
 
-    <div v-else>
-      No users found.
-    </div>
-  </div>
-</div>
-
-
+            
