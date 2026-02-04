@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const appConfig = {
     data() {
       return {
-        url: "https://affiliate.yanbasok.com",  // базовий URL
+        url: "https://affiliate.yanbasok.com",  
         user: { id: null, name: "", phone: "", email: "", date: "", auth: "", type: "" },
         title: "",
         formData: {}
@@ -32,17 +32,18 @@ document.addEventListener('DOMContentLoaded', function() {
     },
 
     mounted() {
+      if (location.protocol === 'https:' && this.url.startsWith('http://')) {
+    console.error('Mixed Content: API must be HTTPS');
+  }
       this.init();
     },
 
     methods: {
-      // 🔹 Примусовий перехід http -> https
       fixUrl(url) {
         if (!url) return '';
         return url.replace(/^http:/, 'https:');
       },
 
-      // 🔹 Ініціалізація user з localStorage
       initUser() {
         const stored = window.localStorage.getItem('user');
         if (stored) {
@@ -143,3 +144,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
   app.use(router).mount('#content');
 });
+
