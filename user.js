@@ -1,169 +1,67 @@
-console.log('user module loaded');
-
 export const user = {
   data() {
     return {
       parent: null,
       loader: false,
-
-      userId: null,
-      userName: '',
-
-      items: [] // statistic rows
-    };
+      user: null,
+      items: [], // таблиця (як у campaign)
+      date: '',
+      date2: ''
+    }
   },
 
   mounted() {
-    this.parent = this.$root;
+    this.parent = this.$root
 
     if (!this.parent?.user?.id) {
-      console.warn('NO AUTH USER');
-      this.parent.logout();
-      return;
+      this.parent.logout()
+      return
     }
 
-    this.userId = this.$route.params.id;
-
-    if (!this.userId) {
-      console.warn('NO USER ID IN ROUTE');
-      return;
-    }
-
-    this.getUser();
-    this.getStatistic();
+    this.getUser()
   },
 
   methods: {
-    /* ======================
-       USER INFO
-    ====================== */
-    async getUser() {
-      try {
-        const res = await axios.post(
-          `${this.parent.url}/site/getUser?auth=${this.parent.user.id}`,
-          this.parent.toFormData({ id: this.userId })
-        );
+    getUser() {
+      this.loader = true
 
-        this.userName = res.data?.item?.name || 'User';
-      } catch (e) {
-        console.error(e);
-      }
-    },
-
-    /* ======================
-       STATISTIC
-    ====================== */
-    async getStatistic() {
-      this.loader = true;
-
-      try {
-        const res = await axios.post(
-          `${this.parent.url}/site/getUserStatistic?auth=${this.parent.user.id}`,
-          this.parent.toFormData({ user_id: this.userId })
-        );
-
-        this.items = Array.isArray(res.data.items)
-          ? res.data.items
-          : [];
-      } catch (e) {
-        console.error(e);
-      } finally {
-        this.loader = false;
-      }
-    },
-
-    /* ======================
-       TOGGLE
-    ====================== */
-    async toggleCampaign(item, value) {
-      const old = item.active;
-      item.active = value;
-
-      try {
-        await axios.post(
-          `${this.parent.url}/site/actionCampaign?auth=${this.parent.user.id}`,
-          this.parent.toFormData({
-            id: item.id,
-            active: value
-          })
-        );
-      } catch (e) {
-        console.error(e);
-        item.active = old;
-      }
+      axios.post(this.parent.url + '/users/getOne', {
+        id: this.$route.params.id,
+        token: this.parent.user.token
+      }).then(res => {
+        this.user = res.data.user
+        this.items = res.data.items || []
+      }).finally(() => {
+        this.loader = false
+      })
     }
   },
 
   template: `
-<div class="inside-content">
-  <Header />
-
-  <div v-if="loader" id="spinner"></div>
-
-  <div class="wrapper">
-
-    <!-- USER NAME -->
-    <div class="panel">
-      <h1>{{ userName }}</h1>
+  <div class="inside-content" v-if="user">
+    <div class="user-header">
+      <h1>{{ user.name }}</h1>
+      <div>Email: {{ user.email }}</div>
+      <div>Phone: {{ user.phone }}</div>
     </div>
 
-    <!-- STATISTIC -->
-    <h2 style="margin:20px 0">Statistic</h2>
-
-    <div class="table" v-if="items.length">
-      <table>
-        <thead>
-          <tr>
-            <th>Fraud</th>
-            <th>Leads</th>
-            <th>Clicks</th>
-            <th>Views</th>
-            <th>Link</th>
-            <th>Size</th>
-            <th>Campaign</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr v-for="item in items" :key="item.id">
-            <td>{{ item.fclicks || 0 }}</td>
-            <td>{{ item.leads || 0 }}</td>
-            <td>{{ item.clicks || 0 }}</td>
-            <td>{{ item.views || 0 }}</td>
-
-            <td>
-              <a v-if="item.link" :href="item.link" target="_blank">
-                {{ item.link }}
-              </a>
-            </td>
-
-            <td>{{ item.size }}</td>
-            <td>{{ item.campaign }}</td>
-
-            <td>
-              <img
-                v-if="item.image"
-                :src="item.image"
-                style="height:32px;border-radius:4px"
-              />
-            </td>
-
-            <td class="actions">
-              <toogle
-                :modelValue="item.active"
-                @update:modelValue="toggleCampaign(item,$event)"
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="empty" v-else>No statistic</div>
-
+    <!-- ТУТ таблиця як у campaign.js, але без статистики -->
+    <table class="table" v-if="items.length">
+      <thead>
+        <tr>
+          <th>Link</th>
+          <th>Size</th>
+          <th>Campaign</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="i in items" :key="i.id">
+          <td>{{ i.link }}</td>
+          <td>{{ i.size }}</td>
+          <td>{{ i.campaign }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-</div>
-`
-};
+  `
+}
