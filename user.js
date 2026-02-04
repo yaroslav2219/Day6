@@ -11,7 +11,7 @@ export const user = {
       userEmail: '',
       userPhone: '',
 
-      items: [] // статистика
+      items: [] 
     };
   },
 
@@ -36,7 +36,6 @@ export const user = {
   },
 
   methods: {
-    // 🔹 Локальні дані користувача
     getUser() {
       if (this.userId === '23') {
         this.userName = 'Yan Basok';
@@ -53,7 +52,6 @@ export const user = {
       }
     },
 
-    // 🔹 Локальна статистика
     getStatistic() {
       if (this.userId === '23') {
         this.items = [
@@ -63,10 +61,9 @@ export const user = {
             leads: 5,
             clicks: 20,
             views: 200,
-            link: 'https://example.com/1',
+            link: 'https://dreamview-seo.co-il',
             size: '300x250',
-            campaign: 'Campaign A',
-            image: 'https://via.placeholder.com/60x60',
+            campaign: 'dreamview-seo',
             active: true
           },
           {
@@ -75,10 +72,9 @@ export const user = {
             leads: 15,
             clicks: 50,
             views: 500,
-            link: 'https://example.com/2',
+            link: 'https://dreamview-seo.co-il',
             size: '728x90',
-            campaign: 'Campaign B',
-            image: 'https://via.placeholder.com/60x60',
+            campaign: 'dreamview-seo',
             active: false
           }
         ];
@@ -90,10 +86,9 @@ export const user = {
             leads: 8,
             clicks: 30,
             views: 300,
-            link: 'https://dreamview.co.il/1',
+            link: 'https://dreamview-seo.co-il',
             size: '300x250',
-            campaign: 'Campaign X',
-            image: 'https://via.placeholder.com/60x60',
+            campaign: 'dreamview-seo',
             active: true
           },
           {
@@ -102,10 +97,9 @@ export const user = {
             leads: 10,
             clicks: 40,
             views: 400,
-            link: 'https://dreamview.co.il/2',
+            link: 'https://ineedjob.seo.co-il',
             size: '728x90',
-            campaign: 'Campaign Y',
-            image: 'https://via.placeholder.com/60x60',
+            campaign: 'ineedjob',
             active: true
           }
         ];
@@ -115,7 +109,7 @@ export const user = {
     },
 
     toggleCampaign(item, value) {
-      // просто міняємо локально
+
       item.active = value;
     }
   },
@@ -191,3 +185,4 @@ export const user = {
 </div>
 `
 };
+
