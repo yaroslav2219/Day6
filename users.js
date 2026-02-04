@@ -48,6 +48,10 @@ export const users = {
       }
     },
 
+    goUser(id) {
+  this.$router.push('/user/' + id);
+},
+
     async toggleActive(user, value) {
       const old = user.active;
       user.active = value;
@@ -130,6 +134,13 @@ export const users = {
           <tr v-for="item in items" :key="item.id">
             <td>{{ item.id }}</td>
 
+            <tr
+  v-for="item in items"
+  :key="item.id"
+  style="cursor:pointer"
+  @click="goUser(item.id)"
+>
+
             <td class="actions">
               <toogle
                 :modelValue="item.active"
@@ -177,3 +188,4 @@ export const users = {
 </div>
 `
 };
+
