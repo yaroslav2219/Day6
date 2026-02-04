@@ -18,9 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const appConfig = {
     data() {
       return {
-          url: location.protocol === 'https:'
-      ? 'https://affiliate.yanbasok.com'
-      : 'http://affiliate.yanbasok.com',
+           url: "https://twilight-night-3140.kya-pk22-6-3.workers.dev/",
         user: { id: null, name: "", phone: "", email: "", date: "", auth: "", type: "" },
         title: "",
         formData: {}
@@ -146,5 +144,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   app.use(router).mount('#content');
 });
+
 
 
