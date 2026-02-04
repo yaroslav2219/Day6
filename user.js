@@ -11,23 +11,27 @@ export const user = {
     };
   },
 
-  mounted() {
-    this.parent = this.$root;
+mounted() {
+  this.parent = this.$root;
 
-    if (!this.parent?.user?.id) {
-      console.warn('NO USER ID');
-      this.parent.logout();
-      return;
-    }
+  if (!this.parent?.user?.id) {
+    console.warn('NO USER ID');
+    this.parent.logout();
+    return;
+  }
 
-    this.userId = this.$route.params.id;
-    this.getStatistic();
-  },
+  const id = this.$route.params.id;
+  if (!id) {
+    console.warn('NO ROUTE USER ID');
+    return;
+  }
+
+  this.userId = id;
+  this.getStatistic();
+},
 
   methods: {
-    /* ========================
-       GET USER STATISTIC
-    ======================== */
+
     async getStatistic() {
       this.loader = true;
 
@@ -49,9 +53,6 @@ export const user = {
       }
     },
 
-    /* ========================
-       TOGGLE CAMPAIGN
-    ======================== */
     async toggleCampaign(item, value) {
       const old = item.active;
       item.active = value;
@@ -142,3 +143,4 @@ export const user = {
 </div>
 `
 };
+
